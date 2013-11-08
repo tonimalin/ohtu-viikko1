@@ -1,3 +1,3 @@
-﻿print 'a'
-print
-print 'b'
+﻿a = 10 * [None]
+
+print a
