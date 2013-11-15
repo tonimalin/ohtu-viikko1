@@ -1,3 +1,3 @@
-﻿a = 10 * [None]
-
-print a
+﻿row =
+    'aaa' +
+    'bbb'
