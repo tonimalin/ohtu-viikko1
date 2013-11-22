@@ -20,19 +20,15 @@ class SkipList:
         self.max_level = MAX_LEVEL
         
     def search(self, search_key):
-        node = self.header
-        for i in range(self.level-1, -1, -1):
-            while (node.forward[i] != None) and (node.forward[i].key < search_key):
-                node = node.forward[i]
-        node = node.forward[0]
+        node = self.basic_search(search_key)[0]
         if node != None  and  node.key == search_key:
             return node.key
             # alkuperäisessä palautetaan solun sisältämä arvo, tässä käytetään arvona avainta
         else:
             return None
-            
-    def change_search(self, search_key):
-        """Makes a search for insert and delete."""
+                    
+    def basic_search(self, search_key):
+        """Makes a search for insert, delete and search operations."""
         update = self.max_level * [None]
         node = self.header
         for i in range(self.level-1, -1, -1):
@@ -43,7 +39,7 @@ class SkipList:
         return [node, update]
             
     def insert(self, search_key, new_value=None):
-        [node, update] = self.change_search(search_key)
+        [node, update] = self.basic_search(search_key)
         if node != None  and  node.key == search_key:
             node.value = new_value
         else:
@@ -58,7 +54,7 @@ class SkipList:
                 update[i].forward[i] = node
 
     def delete(self, search_key):
-        [node, update] = self.change_search(search_key)
+        [node, update] = self.basic_search(search_key)
         if node != None  and  node.key == search_key:
             for i in range(self.level):
                 if update[i].forward[i] != node: break
@@ -82,7 +78,7 @@ class SkipList:
         print
         
     def print_nice(self):
-        """ Print a vertical diagram about the structure."""
+        """ Print a vertical diagram of the structure."""
         width = 7
         print width * ' ' + self.level * (' * ')
         node = self.header.forward[0]
@@ -111,17 +107,3 @@ def random_level(MAX_LEVEL):
         lvl += 1
     return lvl
     
-    
-
-# skip_list = SkipList()
-# i = 0
-# for i in range(40):
-#     skip_list.insert(i)
-#     i += 1
-# skip_list.print_list()
-# skip_list.print_nice()
-# print
-# for i in range(40):
-#     skip_list.delete(i)
-#     skip_list.print_nice()
-#     print
