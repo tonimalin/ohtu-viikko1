@@ -178,7 +178,32 @@ class BinarySearchTree:
             self.move(parent, x, 'left')
 
 
-    def zig_zig(self, x):
+    def splay(self, x):
+        while x != self.root:
+            if x.parent == self.root:
+                self.rotate(x)
+            else:
+                if ( x == x.parent.left   and  x.parent == x.parent.parent.left or
+                     x == x.parent.right  and  x.parent == x.parent.parent.right):
+                    self.zig_zig(x)
+                else:
+                    self.zig_zag(x)
+                
+
+    def zigs_and_zags_root_and_main_node_operations(self, x, grandparent, greatgrandparent):
+        '''Sets x's possible linkage in relation to root and greatgrandparent.'''
+        if grandparent == self.root:
+            self.root = x
+        if greatgrandparent != None:
+            if greatgrandparent.left == grandparent:
+                self.move(x, greatgrandparent, 'left')
+            else:
+                self.move(x, greatgrandparent, 'right')
+        else:
+            self.move(x, None)
+
+            
+    def zig_zig(self, x):   # and zag-zag
         #  Structure of the tree in zig-zig, zag-zag is a mirror image of this.
         #
         #   greatgrandparent
@@ -192,7 +217,7 @@ class BinarySearchTree:
         #  A   child
         
         if x.parent == None  or  x.parent.parent == None:
-            raise NameError('Zig-zigged or zag-zagged node must have parent and grandparent')
+            raise NameError('Zig-zigged or zag-zagged node must have a parent and a grandparent')
         
         # Save links to all nodes that will be changed and
         # deduce the direction of rotation (zig-zig or zag-zag).
@@ -208,21 +233,11 @@ class BinarySearchTree:
             child = x.left
             sibling = parent.left
         else:
-            raise NameError('Path from grandparent to node is not left.left or right.right')  
+            raise NameError('The Path from grandparent to the node is not left.left or right.right')  
         
-        if grandparent == self.root:
-            self.root = x
-
-        # Move x:
-        if greatgrandparent != None:
-            if greatgrandparent.left == grandparent:
-                self.move(x, greatgrandparent, 'left')
-            else:
-                self.move(x, greatgrandparent, 'right')
-        else:
-            self.move(x, None)
+        self.zigs_and_zags_root_and_main_node_operations(x, grandparent, greatgrandparent)
         
-        # Move other nodes:
+        # Move other nodes than x:
         if operation == 'zig-zig':
             self.move(parent, x, 'right')
             self.move(grandparent, parent, 'right')
@@ -233,7 +248,56 @@ class BinarySearchTree:
             self.move(grandparent, parent, 'left')
             self.move(child, parent, 'right')
             self.move(sibling, grandparent, 'right')
-    
+            
+            
+    def zig_zag(self, x):
+        # Structure of the tree in zig-zag  |  Structure of the tree in zag-zig
+        #                                   |  
+        #      greatgrandparent             |       greatgrandparent
+        #             |                     |              |
+        #         grandparent               |          grandparent
+        #           /     \                 |            /     \
+        #       parent     D                |           A    parent
+        #        /  \                       |                 /  \
+        #       A    x                      |                x    D
+        #           / \                     |               / \
+        # left_child   right_child          |     left_child   right_child
+        #
+        #             There are no changes to subtrees A and D linkage
+        
+        if x.parent == None  or  x.parent.parent == None:
+            raise NameError('The zig-zagged or zag-zigged node must have a parent and a grandparent')
+        
+        # Save links to all nodes that will be changed and
+        # deduce the operation from the structure (zig-zag or zag-zig).
+        parent = x.parent
+        grandparent = x.parent.parent
+        greatgrandparent = x.parent.parent.parent
+        if x == parent.right  and  parent == grandparent.left:
+            operation = 'zig-zag'
+            left_child = x.left
+            right_child = x.right
+        elif x == parent.left  and  parent == grandparent.right:
+            operation = 'zag-zig'
+            left_child = x.left
+            right_child = x.right
+        else:
+            raise NameError('The path from the grandparent to the node is not left.right or right.left') 
+
+        self.zigs_and_zags_root_and_main_node_operations(x, grandparent, greatgrandparent)
+            
+        # Move other nodes than x:
+        if operation == 'zig-zag':
+            self.move(parent, x, 'left')
+            self.move(grandparent, x, 'right')
+            self.move(left_child, parent, 'right')
+            self.move(right_child, grandparent, 'left')
+        else:
+            self.move(parent, x, 'right')
+            self.move(grandparent, x, 'left')
+            self.move(left_child, grandparent, 'right')
+            self.move(right_child, parent, 'left')
+
     
     def print_tree(self, x):
         if x != None:
@@ -272,3 +336,4 @@ class BinarySearchTree:
             print
             self.print_tree_vertical(x.left, depth+1, between)
             self.print_tree_vertical(x.right, depth+1, between)
+            

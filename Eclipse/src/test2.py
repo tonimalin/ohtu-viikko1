@@ -133,28 +133,50 @@ def test_splay_tree_zig_zig():
     print 'zag-zag 5'
     tree.zig_zig(node)
     tree.print_tree_vertical(tree.root)
+    
+def test_splay_tree_zig_zag():
+    tree = make_binary_tree([10,5,15,3,7,6,8])
+    tree.print_tree_vertical(tree.root)
+    node = tree.search(tree.root, 7)
+    tree.zig_zag(node)
+    print 'zig-zag 7'
+    tree.print_tree_vertical(tree.root)
+    
+def test_splay_tree_splay():
+    numbers = range(100)
+    tree = make_binary_tree(numbers)
+    tree.print_tree_vertical(tree.root)
+    for i in range(20):
+        rnd = random.choice(numbers)
+        print 'splay', rnd
+        node = tree.search(tree.root, rnd)
+        tree.splay(node)
+    tree.print_tree_vertical(tree.root)
+    
 
 #     rnd = random.choice(numbers)
 #     print rnd, '-->',
-#     node1 = tree.search(tree.root, rnd)
-#     rnd = random.choice(numbers)
 #     print rnd
 #     node2 = tree.search(tree.root, rnd)
 #     tree.move(node1, node2, 'left')
     
-#     tree.print_tree_vertical(tree.root)
-    
 
 
 while True:
-    print '''\nMitä tehdään?\n
-    x lopetetaan\n
+    print '''
+Mitä tehdään?
+    
+    x lopetetaan
+    
     1 test_skip_list()
     2 test_binary_tree()
     3 test_binary_tree_node_move()
     4 test_binary_tree_rotate()
     5 test_binary_tree_rotate_1_branch()
-    6 test_splay_tree_zig_zig()\n'''
+    6 test_splay_tree_zig_zig()
+    7 test_splay_tree_zig_zag()
+    8 test_splay_tree_splay()
+    '''
     a = raw_input('Valitse: ')
     print
     if a == 'x': break
@@ -164,4 +186,6 @@ while True:
     elif a == '4': test_binary_tree_rotate()
     elif a == '5': test_binary_tree_rotate_1_branch()
     elif a == '6': test_splay_tree_zig_zig()
+    elif a == '7': test_splay_tree_zig_zag()
+    elif a == '8': test_splay_tree_splay()
     
