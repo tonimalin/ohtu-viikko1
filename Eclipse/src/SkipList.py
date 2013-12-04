@@ -1,6 +1,6 @@
 ﻿import random
 
-MAX_LEVEL = 10
+MAX_LEVEL = 20
 p = .5
 
 
@@ -23,7 +23,7 @@ class SkipList:
         node = self.basic_search(search_key)[0]
         if node != None  and  node.key == search_key:
             return node.key
-            # alkuperäisessä palautetaan solun sisältämä arvo, tässä käytetään arvona avainta
+            # here node's value is the key
         else:
             return None
                     
@@ -63,10 +63,10 @@ class SkipList:
                 self.level -= 1
         
     def print_list(self):
-        print 'tasoja: ', self.level
+        print 'levels: ', self.level
         node = self.header
         while node != None:
-            print '\nkey:', node.key, '\tforward-linkit:',
+            print '\nkey:', node.key, '\tforward-links:',
             
             for i in range(len(node.forward)):
                 if node.forward[i] == None:

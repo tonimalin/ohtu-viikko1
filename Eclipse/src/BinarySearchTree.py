@@ -5,6 +5,7 @@ Created on 27.11.2013
 @author: Toni
 '''
 class TreeNode:
+    
     def __init__(self, key=None, parent=None, left=None, right=None):
         self.parent = parent
         self.key = key
@@ -18,9 +19,9 @@ class TreeNode:
                 links.append(link.key)
             else:
                 links.append(None)
-        print 'p:', links.pop(0)
-        print 'k:', self.key
-        print 'l:', links.pop(0), '| r:', links.pop(0)
+        print 'parent:', links.pop(0)
+        print 'key:   ', self.key
+        print 'left:  ', links.pop(0), '| right:', links.pop(0)
 
 
 class BinarySearchTree:
@@ -35,12 +36,19 @@ class BinarySearchTree:
             else:
                 x = x.right
         return x
+    
+    def get_node(self, search_key, start=None):
+        if start == None:
+            start = self.root
+        return BinarySearchTree.search(self, start, search_key)
         
-    def insert(self, key):
-        new_node = TreeNode(key)
+    def insert(self, key, new_node=None):
+        if new_node == None:
+            new_node = TreeNode()
+        new_node.key = key
         if self.root == None:
             self.root = new_node
-            return
+            return new_node
         x = self.root
         while x != None: # etsitään kohta, johon uusi alkio kuuluu
             p = x
@@ -55,6 +63,7 @@ class BinarySearchTree:
             p.left = new_node
         else:
             p.right = new_node
+        return new_node
             
     def min(self, x):
         while x.left != None:
@@ -77,6 +86,8 @@ class BinarySearchTree:
     
     
     def delete(self, remove):
+        if not isinstance(remove, TreeNode):
+            raise ValueError('Deleted object must be a TreeNode')
         
         # tapaus 1: poistettavalla ei lapsia
         if remove.left == None  and  remove.right == None:
@@ -108,7 +119,7 @@ class BinarySearchTree:
             return remove
             
         # tapaus 3: poistettavalla kaksi lasta
-        successor = self.min(remove.right)
+        successor = BinarySearchTree.min(self, remove.right)
         remove.key = successor.key # korvataan poistettavan avain seuraajan avaimella
         child = successor.right
         parent = successor.parent # korvataan solmu successor sen lapsella
@@ -123,7 +134,7 @@ class BinarySearchTree:
     
     def rotate(self, x):
         if x.parent == None:
-            raise NameError('Node that will be rotated must have a parent.')
+            raise ValueError('Node that will be rotated must have a parent.')
         if x == x.parent.left:
             self.rotate_right(x)
         else:
@@ -131,6 +142,8 @@ class BinarySearchTree:
 
 
     def rotate_right(self, x):
+        if x.parent == None:
+            raise ValueError('Node that will be rotated must have a parent.')
         child = x.right
         parent = x.parent
         grandparent = x.parent.parent
@@ -143,6 +156,8 @@ class BinarySearchTree:
         
         
     def rotate_left(self, x):
+        if x.parent == None:
+            raise ValueError('Node that will be rotated must have a parent.')
         child = x.left
         parent = x.parent
         grandparent = x.parent.parent
@@ -175,7 +190,9 @@ class BinarySearchTree:
             return []
         
             
-    def print_tree_vertical(self, x, depth=0, between=[]):
+    def print_tree_vertical(self, x='root', depth=0, between=[]):
+        if x == 'root':
+            x = self.root
         SPACE = 4
         if len(between) <= depth:
             between.append(0)

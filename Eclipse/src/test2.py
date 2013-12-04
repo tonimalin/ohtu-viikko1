@@ -1,6 +1,7 @@
 # -*- coding: utf_8 -*-
 
 import random
+import timeit
 
 import BinarySearchTree
 import SkipList
@@ -9,7 +10,7 @@ import SplayTree
 
 def make_binary_tree(numbers=None):
     if not numbers:
-        numbers = [5,2,7,1,3,6,8,0,4,9]
+        numbers = [5,2,7,1,3,6,8,0,9,4]
     tree = BinarySearchTree.BinarySearchTree()
     for i in numbers:
         tree.insert(i)
@@ -17,11 +18,13 @@ def make_binary_tree(numbers=None):
 
 def make_splay_tree(numbers=None):
     if not numbers:
-        numbers = [5,2,7,1,3,6,8,0,4,9]
+        numbers = [5,2,7,1,3,6,8,0,9,4]
     tree = SplayTree.SplayTree()
     for i in numbers:
         tree.insert(i)
     return tree
+
+
 
 def test_binary_tree():
     numbers = range(10)
@@ -56,6 +59,7 @@ def test_binary_tree_rotate_1_branch():
     tree.print_tree_vertical(tree.root)
 
     
+    
 def test_skip_list():
     skip_list = SkipList.SkipList()
     i = 0
@@ -70,6 +74,8 @@ def test_skip_list():
         skip_list.print_nice()
         print
     
+        
+    
 def test_splay_tree_splay():
     numbers = range(50)
     tree = make_splay_tree(numbers)
@@ -81,26 +87,154 @@ def test_splay_tree_splay():
         tree.splay(node)
     tree.print_tree_vertical(tree.root)
     
+def test_splay_tree_insert():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    tree.insert(10)
+    tree.print_tree_vertical()
 
+def test_splay_tree_insert_10():    
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    for i in range(10, 20):
+        tree.insert(i)
+    tree.print_tree_vertical()
+    
+def test_splay_tree_min():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    min = tree.min(tree.root)
+    print 'min node:'
+    min.print_node()
+    tree.print_tree_vertical()
+    
+def test_splay_tree_max():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    tree.max(tree.root)
+    tree.print_tree_vertical()
+    
+def test_splay_tree_succ():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    successor = tree.succ(tree.get_node(5))
+    print 'successor of 5:'
+    successor.print_node()
+    print
+    tree.print_tree_vertical()
+    
+def test_splay_tree_search_succesful():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    print "Search 5 \n"
+    tree.search(tree.root, 5)
+    tree.print_tree_vertical()
+    
+def test_splay_tree_search_unsuccesful():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    print "Search 3.3 \n"
+    tree.search(tree.root, 3.3)
+    tree.print_tree_vertical()
+    
+def test_splay_tree_delete():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    print "delete 5 \n"
+    node = tree.get_node(5)
+    tree.delete(tree.get_node(5))
+    tree.print_tree_vertical()
+    
+def test_splay_tree_delete_4():
+    tree = make_splay_tree()
+    tree.print_tree_vertical()
+    for i in [0,8,4,2]:
+        print "delete", i
+        node = tree.get_node(i)
+        node.print_node()
+        tree.delete(node)
+        tree.print_tree_vertical()
+
+    
+
+def skip_list_insert(number=1000):
+    skip_list = SkipList.SkipList()
+    for i in range(number):
+        skip_list.insert(i)
+        
+def splay_tree_insert(number=1000):
+    splay_tree = SplayTree.SplayTree()
+    for i in range(number):
+        splay_tree.insert(i)
+
+def skip_list_search(inserts=10000, searchs=10000, top_percent=10):
+    pass
+
+def compare_insert_skip_list_and_splay_tree():
+    actions = raw_input('How many actions? ')
+    timer_sl = timeit.Timer('skip_list_insert(' + actions + ')',
+                            'from __main__ import skip_list_insert')
+    print 'Skip list insert ' + actions + ':', timer_sl.timeit(number=1)
+    timer_st = timeit.Timer('splay_tree_insert(' + actions + ')',
+                            'from __main__ import splay_tree_insert')
+    print 'Splay tree insert ' + actions + ':', timer_st.timeit(number=1)
+    # call timeit a few times and returns a list of results
+    # print bar.repeat(3, numbers=1)
+
+# def compare_search_skip_list_and_splay_tree():
+#     insertions = 10000
+#     searchs = 10000
+#     top_percent = 10
+#     random.shuffle(insertions)
+#     
+#     insertions = raw_input('How many insertions? ')
+#     timer_sl = timeit.Timer('skip_list_insert(' + insertions + ')',
+#                             'from __main__ import skip_list_insert')
+#     print 'Skip list insert ' + insertions + ':', timer_sl.timeit(number=1)
+#     timer_st = timeit.Timer('splay_tree_insert(' + insertions + ')',
+#                             'from __main__ import splay_tree_insert')
+#     print 'Splay tree insert ' + insertions + ':', timer_st.timeit(number=1)
+    
 
 while True:
     print '''
-Mitä tehdään?
+    x  exit
     
-    x lopetetaan
+    1  test_skip_list()
     
-    1 test_skip_list()
-    2 test_binary_tree()
-    4 test_binary_tree_rotate()
-    5 test_binary_tree_rotate_1_branch()
-    8 test_splay_tree_splay()
+    2  test_binary_tree()
+    4  test_binary_tree_rotate()
+    5  test_binary_tree_rotate_1_branch()
+    
+    10 test_splay_tree_splay()
+    11 test_splay_tree_insert()
+    12 test_splay_tree_insert_10()
+    13 test_splay_tree_min()
+    14 test_splay_tree_max()
+    15 test_splay_tree_succ()
+    16 test_splay_tree_search_succesful()
+    17 test_splay_tree_search_unsuccesful()
+    18 test_splay_tree_delete()
+    19 test_splay_tree_delete_4()
+    
+    50 compare_insert_skip_list_and_splay_tree()
     '''
-    a = raw_input('Valitse: ')
+    a = raw_input('Choose: ')
     print
-    if   a == 'x': break
-    elif a == '1': test_skip_list()
-    elif a == '2': test_binary_tree()
-    elif a == '4': test_binary_tree_rotate()
-    elif a == '5': test_binary_tree_rotate_1_branch()
-    elif a == '8': test_splay_tree_splay()
+    if   a == 'x' : break
+    elif a == '1' : test_skip_list()
+    elif a == '2' : test_binary_tree()
+    elif a == '4' : test_binary_tree_rotate()
+    elif a == '5' : test_binary_tree_rotate_1_branch()
+    elif a == '10': test_splay_tree_splay()
+    elif a == '11': test_splay_tree_insert()
+    elif a == '12': test_splay_tree_insert_10()
+    elif a == '13': test_splay_tree_min()
+    elif a == '14': test_splay_tree_max()
+    elif a == '15': test_splay_tree_succ()
+    elif a == '16': test_splay_tree_search_succesful()
+    elif a == '17': test_splay_tree_search_unsuccesful()
+    elif a == '18': test_splay_tree_delete()
+    elif a == '19': test_splay_tree_delete_4()
+    elif a == '50': compare_insert_skip_list_and_splay_tree()
     
