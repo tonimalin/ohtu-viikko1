@@ -62,6 +62,14 @@ class SkipList:
             while self.level > 1 and self.header.forward[self.level-1] == None:
                 self.level -= 1
         
+    def skip_list_as_list(self):
+        values = []
+        node = self.header.forward[0]
+        while node != None:
+            values.append(node.key)    
+            node = node.forward[0]
+        return values
+        
     def print_list(self):
         print 'levels: ', self.level
         node = self.header

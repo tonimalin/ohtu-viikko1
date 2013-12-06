@@ -4,6 +4,8 @@ import random
 import unittest
 
 import BinarySearchTree
+import SplayTree
+import SkipList
 import Treap
 #from BinarySearchTree import BinarySearchTree
 
@@ -47,7 +49,6 @@ class TestBinarySearchTree(unittest.TestCase):
     def test_delete_node_with_two_childs(self):
         self.bst.delete(self.bst.get_node(3))
         self.numbers.remove(3)
-        # self.numbers.sort()
         self.assertEqual(sorted(self.numbers), self.bst.tree_as_list())
         
     def test_delete_until_tree_is_empty(self):  # bad test: deleted node has never two childs
@@ -135,6 +136,121 @@ class TestBinarySearchTree(unittest.TestCase):
 
 
 
+class TestSplayTree(unittest.TestCase):
+    pass
+    # creation_of_empty_tree
+        # root == None
+    # inserts to empty tree
+        # one node: 1
+        # two nodes
+            # the first will be left child: 1,2
+            # the first will be right child: 2,1
+        # 3 nodes
+            # 1,2,3
+            # 1,3,2
+            # 2,1,3
+            # 2,3,1
+            # 3,1,2
+            # 3,2,1
+            
+    # Test search
+    
+#     def test_search(self):
+#         st = SplayTree.SplayTree()
+#         st.insert(1)
+#         node = st.search(st.root, 1)
+        
+    
+    # Test delete
+        
+    def test_delete__only_node(self):
+        st = SplayTree.SplayTree()
+        st.insert(1)
+        node = st.search(st.root, 1)
+        st.delete(node)
+        self.assertTrue(st.root == None)
+        
+        # two node tree
+        
+    def test_delete__2_node_tree_with_parent_and_left_child__delete_child(self):
+        st = SplayTree.SplayTree()
+        st.insert(1)
+        st.insert(2)
+        node1 = st.search(st.root, 1)
+        node2 = st.search(st.root, 2)
+        st.delete(node1)
+        self.assertTrue(st.root      == node2 and
+                        node2.parent == None and
+                        node2.left   == None and
+                        node2.right  == None)
+        
+    def test_delete__2_node_tree_with_parent_and_left_child__delete_parent(self):
+        st = SplayTree.SplayTree()
+        st.insert(1)
+        st.insert(2)
+        node1 = st.search(st.root, 1)
+        node2 = st.search(st.root, 2)
+        st.delete(node2)
+        self.assertTrue(st.root      == node1 and
+                        node1.parent == None and
+                        node1.left   == None and
+                        node1.right  == None)
+        
+    def test_delete__2_node_tree_with_parent_and_right_child__delete_child(self):
+        st = SplayTree.SplayTree()
+        st.insert(2)
+        st.insert(1)
+        node1 = st.search(st.root, 1)
+        node2 = st.search(st.root, 2)
+        st.delete(node2)
+        self.assertTrue(st.root      == node1 and
+                        node1.parent == None and
+                        node1.left   == None and
+                        node1.right  == None)
+        
+    def test_delete__2_node_tree_with_parent_and_right_child__delete_parent(self):
+        st = SplayTree.SplayTree()
+        st.insert(2)
+        st.insert(1)
+        node1 = st.search(st.root, 1)
+        node2 = st.search(st.root, 2)
+        st.delete(node1)
+        self.assertTrue(st.root      == node2 and
+                        node2.parent == None and
+                        node2.left   == None and
+                        node2.right  == None)
+        
+        # three node tree
+    def initialize_test_delete__3_node_tree_all_left(self):
+        self.st = SplayTree.SplayTree()
+        self.nodes = []
+        for key in range(3):
+            self.st.insert(key)
+            self.nodes.append(self.st.search(self.st.root, key))
+        
+        
+    def test_delete__3_node_tree_all_left__delete_middle(self):
+        self.initialize_test_delete__3_node_tree_all_left()
+        n0, n1, n2 = self.nodes
+        self.st.delete(n1)
+#         for n in range(3):
+#             self.nodes[n].print_node()
+#             print
+        self.assertTrue(self.st.root == n2   and
+                        n2.parent    == None and
+                        n2.left      == n0   and
+                        n2.right     == None and
+                        n0.parent    == n2   and
+                        n0.left      == None and
+                        n0.right     == None)
+        
+        
+        
+    # splay
+        
+        
+
+
 
 class TestTreap(unittest.TestCase):
     
@@ -176,8 +292,56 @@ class TestTreap(unittest.TestCase):
                     self.assertTrue(node.priority < n.priority)
         
 
-suite = unittest.TestLoader().loadTestsFromTestCase(TestBinarySearchTree)
-unittest.TextTestRunner(verbosity=2).run(suite)
 
-suite = unittest.TestLoader().loadTestsFromTestCase(TestTreap)
-unittest.TextTestRunner(verbosity=2).run(suite)
+class TestSKipList(unittest.TestCase):
+    
+    def test_skip_list_as_list(self):
+        sl = SkipList.SkipList()
+        for key in range(10):
+            sl.insert(key)
+        self.assertEqual(range(10), sl.skip_list_as_list())
+
+    def test_insert_between(self):
+        even = range(0, 20, 2)
+        odd = range(1, 20, 2)
+        numbers = even + odd
+        numbers.sort()
+        sl = SkipList.SkipList()
+        for number in even:
+            sl.insert(number)
+        for number in odd:
+            sl.insert(number)
+        self.assertEqual(numbers, sl.skip_list_as_list())
+        
+    def test_delete_between(self):
+        even = range(0, 20, 2)
+        odd = range(1, 20, 2)
+        numbers = even + odd
+        numbers.sort()
+        sl = SkipList.SkipList()
+        for number in numbers:
+            sl.insert(number)
+        for number in odd:
+            sl.delete(number)
+        self.assertEqual(even, sl.skip_list_as_list())
+        
+    def test_search_unsuccesful(self):
+        sl = SkipList.SkipList()
+        sl.insert(1)
+        self.assertIsNone(sl.search(2))
+        
+    def test_search_succesful(self):
+        sl = SkipList.SkipList()
+        for number in range(100):
+            sl.insert(number)
+        for number in [0,11,17,27,99,50,11,17]:
+            self.assertTrue(sl.search(number) == number)
+        
+        
+
+
+for test_class in [TestBinarySearchTree, TestSplayTree, TestTreap, TestSKipList]:
+    suite = unittest.TestLoader().loadTestsFromTestCase(test_class)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+    
+    

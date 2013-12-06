@@ -1,5 +1,6 @@
 # -*- coding: utf_8 -*-
 
+import time
 import random
 import timeit
 
@@ -125,6 +126,17 @@ def test_splay_tree_succ():
     print
     tree.print_tree_vertical()
     
+def test_splay_tree_search():
+    time_begin = time.time()
+    st = SplayTree.SplayTree()
+    for i in range(1000):
+        st.insert(i)
+    for s in range(1000):
+        st.search(st.root, random.randint(0,1000))
+    st.print_tree_vertical()
+    print 'Time: ', time.time() - time_begin
+        
+    
 def test_splay_tree_search_succesful():
     tree = make_splay_tree()
     tree.print_tree_vertical()
@@ -158,80 +170,54 @@ def test_splay_tree_delete_4():
         tree.print_tree_vertical()
 
     
+    
+def compare_insertion_and_search():
+    rounds = int(raw_input('How many rounds of test? '))
+    insertions = int(raw_input('How many insertions (nodes in the structure)? '))
+    top_percent = float(raw_input('How many percent of the values are searched? '))
+    repeat = int(raw_input('How many times those values are searched? '))
+    
+    values = random.sample(range(insertions*10), insertions)
+    search_values = random.sample(values, int(top_percent * insertions / 100))
+    searches = search_values * repeat
+    random.shuffle(searches)
+    
+    for round in range(rounds):
 
-def skip_list_insert(number=1000):
-    skip_list = SkipList.SkipList()
-    for i in range(number):
-        skip_list.insert(i)
+        print '-' * 20
+        sl = SkipList.SkipList()
+        st = SplayTree.SplayTree()
+        t  = Treap.Treap()
+        structures = [(sl, 'Skip list'), (st, 'Splay tree'), (t, 'Treap')]
+            
+        print '\nInsertions:'
+        for structure in structures:
+            time_begin = time.time()
+            for key in range(insertions):
+                structure[0].insert(key)
+            print ('Inserting ' + str(insertions) + ' values to empty ' +
+                   structure[1] + ' took ' + str(time.time() - time_begin) +
+                   ' seconds')
+    
+        print '\nSearches:'
         
-def splay_tree_insert(number=1000):
-    splay_tree = SplayTree.SplayTree()
-    for i in range(number):
-        splay_tree.insert(i)
-
-
-def skip_list_search(keys, search_keys, repeat_search):
-    skip_list = SkipList.SkipList()
-    for n in keys:
-        skip_list.insert(n)
-    for _ in range(repeat_search):
-        for s in search_keys:
-            skip_list.search(s)
-            
-def splay_tree_search(keys, search_keys, repeat_search):
-    splay_tree = SplayTree.SplayTree()
-    for n in keys:
-        splay_tree_insert(n)
-    for _ in range(repeat_search):
-        for s in search_keys:
-            splay_tree.search(splay_tree.root, s)
-            
-def treap_search(keys, search_keys, repeat_search):
-    treap = Treap.Treap()
-    for n in keys:
-        treap.insert(n)
-    for _ in range(repeat_search):
-        for s in search_keys:
-            treap.search(treap.root, s)
-    
-    
-def initialize_compare_search():
-    all = random.sample(range(10000), 20)
-    search = random.sample(all, 10)
-    return all, search
-
-
-def compare_insert_skip_list_and_splay_tree():
-    actions = raw_input('How many actions? ')
-    
-    timer_sl = timeit.Timer('skip_list_insert(' + actions + ')',
-                            'from __main__ import skip_list_insert')
-    print 'Skip list insert ' + actions + ':', timer_sl.timeit(number=1)
-    
-    timer_st = timeit.Timer('splay_tree_insert(' + actions + ')',
-                            'from __main__ import splay_tree_insert')
-    print 'Splay tree insert ' + actions + ':', timer_st.timeit(number=1)
-    
-    # call timeit a few times and returns a list of results
-    # print bar.repeat(3, numbers=1)
-
-
-def compare_search():
-    repeat_search = '1'
-    print 'Lisätään rakenteeseen 20 alkiota.'
-    print 'Etsitään niistä 10 alkioita ' + repeat_search + ' kertaa.'
-    timer1 = timeit.Timer('skip_list_search(keys, search_keys, ' + repeat_search + ')',
-                          'from __main__ import skip_list_search, initialize_compare_search\n'
-                          'keys, search_keys = initialize_compare_search()')
-    print 'Skip list:', timer1.timeit(number=1)
-    timer1 = timeit.Timer('splay_tree_search(keys, search_keys, ' + repeat_search + ')',
-                          'from __main__ import splay_tree_search, initialize_compare_search\n'
-                          'keys, search_keys = initialize_compare_search()')
-    print 'Splay tree:', timer1.timeit(number=1)
-    timer1 = timeit.Timer('treap_search(keys, search_keys, ' + repeat_search + ')',
-                          'from __main__ import treap_search, initialize_compare_search\n'
-                          'keys, search_keys = initialize_compare_search()')
-    print 'Treap:', timer1.timeit(number=1)
+        time_begin = time.time()
+        for key in searches:
+            sl.search(key)
+        print ('Searching ' + str(len(searches)) + ' values from skip list took ' +
+               str(time.time() - time_begin) + ' seconds')
+         
+        time_begin = time.time()
+        for key in searches:
+            st.search(st.root, key)
+        print ('Searching ' + str(len(searches)) + ' values from splay tree took ' +
+               str(time.time() - time_begin) + ' seconds')
+        
+        time_begin = time.time()       
+        for key in searches:
+            t.search(t.root, key)
+        print ('Searching ' + str(len(searches)) + ' values from treap took ' +
+               str(time.time() - time_begin) + ' seconds')
     
 
 while True:
@@ -254,9 +240,9 @@ while True:
     17 test_splay_tree_search_unsuccesful()
     18 test_splay_tree_delete()
     19 test_splay_tree_delete_4()
+    20 test_splay_tree_search()
     
-    50 compare_insert_skip_list_and_splay_tree()
-    51 compare_search()
+    52 compare_insertion_and_search()
     '''
     a = raw_input('Choose: ')
     print
@@ -275,6 +261,6 @@ while True:
     elif a == '17': test_splay_tree_search_unsuccesful()
     elif a == '18': test_splay_tree_delete()
     elif a == '19': test_splay_tree_delete_4()
-    elif a == '50': compare_insert_skip_list_and_splay_tree()
-    elif a == '51': compare_search()
+    elif a == '20': test_splay_tree_search()
+    elif a == '52': compare_insertion_and_search()
     
