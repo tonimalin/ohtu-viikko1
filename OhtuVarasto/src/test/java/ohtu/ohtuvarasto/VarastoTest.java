@@ -82,7 +82,7 @@ public class VarastoTest {
 	@Test
 	public void liikaaLisattyEiMahdu() {
 		varasto.lisaaVarastoon(11);
-		assertEquals(11, varasto.getSaldo(), vertailuTarkkuus);
+		assertEquals(10, varasto.getSaldo(), vertailuTarkkuus);
 	}
 	
 	
