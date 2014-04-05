@@ -1,0 +1,77 @@
+Määrittely
+==========
+
+Työn aihe on tietorakenteiden skip list, splay tree ja treap tehokkuuden vertailu.
+Kunkin rakenteen haku, lisäys ja poisto toteutetaan niin, että niiden aikavaatimus keskimäärin O(log n).
+
+Lähteet
+-------
+
+Skip list
+William Pughin artikkeli: Skip Lists: A Probabilistic Alternative to
+Balanced Trees ftp://ftp.cs.umd.edu/pub/skipLists/skiplists.pdf
+
+Splay tree
+http://en.wikipedia.org/wiki/Splay_tree
+
+Treap
+http://en.wikipedia.org/wiki/Treap
+
+
+
+Toteutus
+========
+
+Ohjelma on toteutettu Python-ohjelmointikielellä.
+
+Ohjelmakoodi on jaettu eri tiedostoihin seuraavasti:
+Comparison.py        Suorituskykyvertailut ja muut testit ja tulosteet.
+Tests.py             Yksikkötestit.
+BinarySearchTree.py  Sisältää luokat BinarySearchTree ja TreeNode. BinarySearchTree koostuu TreeNode-instansseista.
+SplayTree.py         Sisältää luokan SplayTree, joka on BinarySearchTreen aliluokka. 
+Treap.py             Sisältää luokan Treap, joka on BinarySearchTreen aliluokka. Sisältää myös TreapNode-luokan, joka on TreeNode-luokan aliluokka.
+SkipList.py          Sisältää luokat Node ja SkipList. Skip list koostuu Node-instansseista.
+
+Kukin tietorakenne on toteutettu nimensä mukaisessa luokassa.
+
+
+Tekemäni ohjelma toimii tietorakenteiden määritelmien mukaisesti logaritmisessa ajassa. 
+
+
+Puutteita
+---------
+
+Splay treen poisto ei toimi oikein. Treapin kaikki toimintoja ei ole toteutettu.
+
+
+Rakenteiden tehokkuuden vertailua
+---------------------------------
+
+Koska kaikki toimivat keskimäärin logaritmisessa ajassa oli kovin suuria eroja
+vaikeaa saada algoritmien toimintanopeuksissa.
+
+Tyypillisiä noin arvoja testeistä:
+
+10000 solmun lisääminen:
+Skip list   0.3 s
+Splay tree  0.2 s
+Treap       0.4 s
+
+Haetaan 100 samaa solmua 100 kertaan satunnaisessa järjestyksessä 10000 solmun rakenteesta:
+Skip list   0.3 s
+Splay tree  0.2 s
+Treap       0.2 s
+
+Kun haetaan 1 solmu 10000 kertaa 10000 solmun rakenteesta saadaan Splay treestä muutaman kerran nopeampi kuin muista:
+Skip list   0.4 s
+Splay tree  0.06 s
+Treap       0.3 s
+
+
+
+Testaus
+=======
+
+Tietorakenteiden oikeellisuuden testaamista varten on yksikkötestejä moduulissa Tests.py.
+Yksikkötestit eivät ole täysin kattavia.
+Kaikki testatut asiat toimivat lukuunottamatta Splay puun poisto-operaatiota, jossa havaitaan virhe.
